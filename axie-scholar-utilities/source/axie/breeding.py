@@ -127,23 +127,13 @@ class AxieBreedManager:
             sys.exit()
 
     def calculate_cost(self):
-        return self.calculate_fee_cost() + self.breeding_costs
+        return self.breeding_costs
 
     def calculate_breeding_cost(self):
-        # TODO: We need to calculate how much will all breeding cost, pending for the future!
         return 0
 
     def calculate_fee_cost(self):
-        number_of_breeds = len(self.breeding_file)
-        if number_of_breeds <= 15:
-            cost = number_of_breeds * 30
-        if 15 < number_of_breeds <= 30:
-            cost = (15 * 30) + ((number_of_breeds - 15) * 25)
-        if 30 < number_of_breeds <= 50:
-            cost = (15 * 30) + (15 * 25) + ((number_of_breeds - 30) * 20)
-        if number_of_breeds > 50:
-            cost = (15 * 30) + (15 * 25) + (20 * 20) + ((number_of_breeds - 50) * 15)
-        return cost
+        return 0
 
     def execute(self):
         if check_balance(self.payment_account) < self.calculate_cost():

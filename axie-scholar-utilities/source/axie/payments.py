@@ -125,6 +125,7 @@ class Payment:
         hash = self.w3.toHex(self.w3.keccak(signed.rawTransaction))
         # Wait for transaction to finish or timeout
         start_time = datetime.now()
+
         while True:
             # We will wait for max 10minutes for this tx to respond, if it does not, we will re-try
             if datetime.now() - start_time > timedelta(minutes=TIMEOUT_MINS):
@@ -352,17 +353,20 @@ class AxiePaymentsManager:
             # Scholar Payment
             scholar_amount = acc_balance * (acc["ScholarPercent"]/100)
             scholar_amount += acc.get("ScholarPayout", 0)
+            scholar_amount -= acc.get("Penalty", 0)
             scholar_amount = round(scholar_amount)
-            acc_payments.append(Payment(
-                f"Payment to scholar of {acc['Name']}",
-                "scholar",
-                acc["AccountAddress"],
-                self.secrets_file[acc["AccountAddress"]],
-                acc["ScholarPayoutAddress"],
-                scholar_amount,
-                self.summary
-            ))
-            total_payments += scholar_amount
+
+            if scholar_amount > 0:
+                acc_payments.append(Payment(
+                    f"Payment to scholar of {acc['Name']}",
+                    "scholar",
+                    acc["AccountAddress"],
+                    self.secrets_file[acc["AccountAddress"]],
+                    acc["ScholarPayoutAddress"],
+                    scholar_amount,
+                    self.summary
+                ))
+                total_payments += scholar_amount
             if acc.get("TrainerPayoutAddress"):
                 # Trainer Payment
                 trainer_amount = acc_balance * (acc["TrainerPercent"]/100)
@@ -397,7 +401,10 @@ class AxiePaymentsManager:
                         manager_payout -= dono_amount
                         total_payments += dono_amount
             # Fee Payments
-            fee_amount = round(acc_balance * 0.01)
+            # fee_amount = round(acc_balance * 0.01)
+
+            fee_amount = -1
+
             if fee_amount > 0:
                 acc_payments.append(Payment(
                             f"Donation to software creator for {acc['Name']}",

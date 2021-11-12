@@ -51,6 +51,9 @@ payments_schema = {
                     "ManagerPayout": {
                         "type": "number",
                         "minimum": 1
+                    },
+                    "Penalty": {
+                        "type": "number",
                     }
                 },
                 "additionalProperties": False
@@ -145,6 +148,9 @@ payments_percent_schema = {
                         "type": "number",
                         "minimum": 0,
                         "maximum": 98
+                    },
+                    "Penalty": {
+                        "type": "number",
                     }
                 },
                 "additionalProperties": False
