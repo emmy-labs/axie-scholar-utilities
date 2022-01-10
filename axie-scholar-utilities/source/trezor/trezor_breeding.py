@@ -1,5 +1,6 @@
 import sys
 import json
+import rlp
 import logging
 from time import sleep
 from datetime import datetime, timedelta
@@ -7,6 +8,9 @@ from datetime import datetime, timedelta
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 from web3 import Web3, exceptions
+from trezorlib.client import get_default_client
+from trezorlib.tools import parse_path
+from trezorlib import ethereum
 
 from axie.schemas import breeding_schema
 from axie.utils import (
@@ -16,10 +20,12 @@ from axie.utils import (
     AXIE_CONTRACT,
     check_balance,
     TIMEOUT_MINS,
-    ImportantLogsFilter,
-    USER_AGENT
+    ImportantLogsFilter
 )
-from axie.payments import Payment, PaymentsSummary, CREATOR_FEE_ADDRESS
+from axie.payments import PaymentsSummary, CREATOR_FEE_ADDRESS
+from axie.utils import USER_AGENT
+from trezor.trezor_payments import TrezorPayment
+from trezor.trezor_utils import CustomUI
 
 
 now = int(datetime.now().timestamp())
@@ -32,8 +38,8 @@ file_handler.addFilter(ImportantLogsFilter())
 logger.addHandler(file_handler)
 
 
-class Breed:
-    def __init__(self, sire_axie, matron_axie, address, private_key):
+class TrezorBreed:
+    def __init__(self, sire_axie, matron_axie, address, client, bip_path):
         self.w3 = Web3(
             Web3.HTTPProvider(
                 RONIN_PROVIDER_FREE,
@@ -41,7 +47,10 @@ class Breed:
         self.sire_axie = sire_axie
         self.matron_axie = matron_axie
         self.address = address.replace("ronin:", "0x")
-        self.private_key = private_key
+        self.client = client
+        self.bip_path = parse_path(bip_path)
+        self.gwei = self.w3.toWei('0', 'gwei')
+        self.gas = 250000
 
     def execute(self):
         # Prepare transaction
@@ -54,24 +63,38 @@ class Breed:
         # Get Nonce
         nonce = get_nonce(self.address)
         # Build transaction
-        transaction = axie_contract.functions.breedAxies(
+        breed_tx = axie_contract.functions.breedAxies(
             self.sire_axie,
             self.matron_axie
         ).buildTransaction({
             "chainId": 2020,
-            "gas": 492874,
+            "gas": self.gas,
             "gasPrice": self.w3.toWei("0", "gwei"),
             "nonce": nonce
         })
-        # Sign transaction
-        signed = self.w3.eth.account.sign_transaction(
-            transaction,
-            private_key=self.private_key
+        data = self.w3.toBytes(hexstr=breed_tx['data'])
+        to = self.w3.toBytes(hexstr=AXIE_CONTRACT)
+        sig = ethereum.sign_tx(
+            self.client,
+            n=self.bip_path,
+            nonce=nonce,
+            gas_price=self.gwei,
+            gas_limit=self.gas,
+            to=AXIE_CONTRACT,
+            value=0,
+            data=data,
+            chain_id=2020
         )
+        logging.info(f'Important: Debugging information {sig}')
+        l_sig = list(sig)
+        l_sig[1] = l_sig[1].lstrip(b'\x00')
+        l_sig[2] = l_sig[2].lstrip(b'\x00')
+        sig = tuple(l_sig)
+        transaction = rlp.encode((nonce, self.gwei, self.gas, to, 0, data) + sig)
         # Send raw transaction
-        self.w3.eth.send_raw_transaction(signed.rawTransaction)
+        self.w3.eth.send_raw_transaction(transaction)
         # get transaction hash
-        hash = self.w3.toHex(self.w3.keccak(signed.rawTransaction))
+        hash = self.w3.toHex(self.w3.keccak(transaction))
         # Wait for transaction to finish or timeout
         logging.info("{self} about to start!")
         start_time = datetime.now()
@@ -103,11 +126,12 @@ class Breed:
                 f"{self.address.replace('0x', 'ronin:')}")
 
 
-class AxieBreedManager:
-    def __init__(self, breeding_file, secrets_file, payment_account):
-        self.secrets = load_json(secrets_file)
+class TrezorAxieBreedManager:
+
+    def __init__(self, breeding_file, trezor_config, payment_account):
+        self.trezor_config = load_json(trezor_config)
         self.breeding_file = load_json(breeding_file)
-        self.payment_account = payment_account
+        self.payment_account = payment_account.lower()
         self.breeding_costs = 0
 
     def verify_inputs(self):
@@ -120,23 +144,35 @@ class AxieBreedManager:
                              f'For attribute in: {list(ex.path)}')
             validation_error = True
         for acc in self.breeding_file:
-            if acc['AccountAddress'] not in self.secrets:
-                logging.critical(f"Account '{acc['AccountAddress']}' is not present in secret file, please add it.")
+            if acc['AccountAddress'].lower() not in self.trezor_config:
+                logging.critical(f"Account '{acc['AccountAddress']}' is not present in trezor config, "
+                                 "please re-run setup.")
                 validation_error = True
-        if self.payment_account not in self.secrets:
-            logging.critical(f"Payment account '{self.payment_account}' is not present in secret file, please add it.")
+        if self.payment_account not in self.trezor_config:
+            logging.critical(f"Payment account '{self.payment_account}' is not present in trezor config, "
+                             "please re-run setup.")
             validation_error = True
         if validation_error:
             sys.exit()
 
     def calculate_cost(self):
-        return self.breeding_costs
+        return self.calculate_fee_cost() + self.breeding_costs
 
     def calculate_breeding_cost(self):
+        # TODO: We need to calculate how much will all breeding cost, pending for the future!
         return 0
 
     def calculate_fee_cost(self):
-        return 0
+        number_of_breeds = len(self.breeding_file)
+        if number_of_breeds <= 15:
+            cost = number_of_breeds * 30
+        if 15 < number_of_breeds <= 30:
+            cost = (15 * 30) + ((number_of_breeds - 15) * 25)
+        if 30 < number_of_breeds <= 50:
+            cost = (15 * 30) + (15 * 25) + ((number_of_breeds - 30) * 20)
+        if number_of_breeds > 50:
+            cost = (15 * 30) + (15 * 25) + (20 * 20) + ((number_of_breeds - 50) * 15)
+        return cost
 
     def execute(self):
         if check_balance(self.payment_account) < self.calculate_cost():
@@ -145,21 +181,23 @@ class AxieBreedManager:
 
         logging.info("About to start breeding axies")
         for bf in self.breeding_file:
-            b = Breed(
+            b = TrezorBreed(
                 sire_axie=bf['Sire'],
                 matron_axie=bf['Matron'],
-                address=bf['AccountAddress'],
-                private_key=self.secrets[bf['AccountAddress']]
+                address=bf['AccountAddress'].lower(),
+                client=get_default_client(ui=CustomUI(self.trezor_config[bf['AccountAddress'].lower()]['passphrase'])),
+                bip_path=self.trezor_config[bf['AccountAddress'].lower()]['bip_path']
             )
             b.execute()
         logging.info("Done breeding axies")
         fee = self.calculate_fee_cost()
         logging.info(f"Time to pay the fee for breeding. For this session it is: {fee} SLP")
-        p = Payment(
+        p = TrezorPayment(
             "Breeding Fee",
             "donation",
+            get_default_client(ui=CustomUI(passphrase=self.trezor_config[self.payment_account]['passphrase'])),
+            parse_path(self.trezor_config[self.payment_account]['bip_path']),
             self.payment_account,
-            self.secrets[self.payment_account],
             CREATOR_FEE_ADDRESS,
             fee,
             PaymentsSummary()
