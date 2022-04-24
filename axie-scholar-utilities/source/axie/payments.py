@@ -3,7 +3,7 @@ import json
 import logging
 from datetime import datetime, timedelta
 from time import sleep
-
+import math
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 from web3 import Web3, exceptions
@@ -16,10 +16,11 @@ from axie.utils import (
     Singleton,
     ImportantLogsFilter,
     SLP_CONTRACT,
-    RONIN_PROVIDER_FREE,
-    TIMEOUT_MINS
+    RONIN_PROVIDER,
+    TIMEOUT_MINS,
+    write_json,
+    USER_AGENT
 )
-
 
 CREATOR_FEE_ADDRESS = "ronin:9fa1bc784c665e683597d3f29375e45786617550"
 
@@ -35,7 +36,10 @@ logger.addHandler(file_handler)
 
 class Payment:
     def __init__(self, name, payment_type, from_acc, from_private, to_acc, amount, summary):
-        self.w3 = Web3(Web3.HTTPProvider(RONIN_PROVIDER_FREE))
+        self.w3 = Web3(
+            Web3.HTTPProvider(
+                RONIN_PROVIDER,
+                request_kwargs={"headers": {"content-type": "application/json", "user-agent": USER_AGENT}}))
         self.name = name
         self.payment_type = payment_type
         self.from_acc = from_acc.replace("ronin:", "0x")
@@ -60,7 +64,7 @@ class Payment:
             0
         ).buildTransaction({
             "chainId": 2020,
-            "gas": 500000,
+            "gas": 492874,
             "gasPrice": self.w3.toWei("0", "gwei"),
             "nonce": nonce
         })
@@ -110,7 +114,7 @@ class Payment:
             self.amount
         ).buildTransaction({
             "chainId": 2020,
-            "gas": 250000,
+            "gas": 246437,
             "gasPrice": self.w3.toWei("0", "gwei"),
             "nonce": nonce
         })
@@ -151,6 +155,7 @@ class Payment:
                 amount=self.amount,
                 address=self.to_acc.replace('0x', 'ronin:'),
                 payout_type=self.payment_type)
+
         else:
             logging.info(f"Important: Transaction {self} failed. Trying to replace it with a 0 value tx and re-try.")
             self.send_replacement_tx(nonce)
@@ -205,24 +210,6 @@ class AxiePaymentsManager:
             logging.critical(f"Check your manager ronin {self.payments_file['Manager']}, it has an incorrect format")
             validation_success = False
         # check donations do not exceed 100%
-        if self.payments_file.get("Donations") and self.type == "amount":
-            total = sum([x["Percent"] for x in self.payments_file.get("Donations")])
-            if total > 0.99:
-                logging.critical("Payments file donations exeeds 100%, please review it")
-                validation_success = False
-            if any(len(dono['AccountAddress'].replace("ronin:", "0x")) != 42 for dono in self.payments_file["Donations"]):  # noqa
-                logging.critical("Please review the ronins in your donations. One or more are wrong!")
-                validation_success = False
-            self.donations = self.payments_file["Donations"]
-        if self.payments_file.get("Donations") and self.type == "percent":
-            total = sum([x["Percent"] for x in self.payments_file.get("Donations")])
-            if total > 99:
-                logging.critical("Payments file donations exeeds 100%, please review it")
-                validation_success = False
-            if any(len(dono['AccountAddress'].replace("ronin:", "0x")) != 42 for dono in self.payments_file["Donations"]): # noqa
-                logging.critical("Please review the ronins in your donations. One or more are wrong!")
-                validation_success = False
-            self.donations = self.payments_file["Donations"]
 
         # Check we have private keys for all accounts
         for acc in self.payments_file["Scholars"]:
@@ -234,7 +221,7 @@ class AxiePaymentsManager:
                 logging.critical(f"Private key for account {sf} is not valid, please review it!")
                 validation_success = False
         if not validation_success:
-            logging.critical("Please make sure your payments.json file looks like the one in the README.md\n"
+            logging.critical("Please make sure your paid.json file looks like the one in the README.md\n"
                              "Find it here: https://ferranmarin.github.io/axie-scholar-utilities/")
             logging.critical("If your problem is with secrets.json, "
                              "delete it and re-generate the file starting with an empty secrets file.")
@@ -255,12 +242,13 @@ class AxiePaymentsManager:
         return True
 
     def prepare_payout(self):
-        if self.type == "amount":
-            self.prepare_payout_amount()
-        elif self.type == "percent":
-            self.prepare_payout_percent()
-        else:
-            logging.critical(f"Unexpected error! Unrecognized payments mode {self.type}")
+        self.prepare_payout_percent()
+        # if self.type == "amount":
+        #    self.prepare_payout_amount()
+        # elif self.type == "percent":
+        #     self.prepare_payout_percent()
+        # else:
+        #    logging.critical(f"Unexpected error! Unrecognized payments mode {self.type}")
 
     def prepare_payout_amount(self):
         for acc in self.scholar_accounts:
@@ -316,14 +304,14 @@ class AxiePaymentsManager:
             if fee_payout > 1:
                 total_dono += fee_payout
                 acc_payments.append(Payment(
-                            f"Donation to software creator for {acc['Name']}",
-                            "donation",
-                            acc["AccountAddress"],
-                            self.secrets_file[acc["AccountAddress"]],
-                            CREATOR_FEE_ADDRESS,
-                            fee_payout,
-                            self.summary
-                        ))
+                    f"Donation to software creator for {acc['Name']}",
+                    "donation",
+                    acc["AccountAddress"],
+                    self.secrets_file[acc["AccountAddress"]],
+                    CREATOR_FEE_ADDRESS,
+                    fee_payout,
+                    self.summary
+                ))
             # manager payment
             acc_payments.append(Payment(
                 f"Payment to manager of {acc['Name']}",
@@ -351,12 +339,13 @@ class AxiePaymentsManager:
             total_payments = 0
             acc_payments = []
             # Scholar Payment
-            scholar_amount = acc_balance * (acc["ScholarPercent"]/100)
+            final_balance = acc_balance - acc.get("PreviousScholar", 0)
+            scholar_amount = final_balance * (acc["ScholarPercent"] / 100)
             scholar_amount += acc.get("ScholarPayout", 0)
             scholar_amount -= acc.get("Penalty", 0)
-            scholar_amount = round(scholar_amount)
+            scholar_amount = math.floor(scholar_amount)
 
-            if scholar_amount > 0:
+            if scholar_amount > 0 and acc["ScholarPayoutAddress"]:
                 acc_payments.append(Payment(
                     f"Payment to scholar of {acc['Name']}",
                     "scholar",
@@ -367,56 +356,11 @@ class AxiePaymentsManager:
                     self.summary
                 ))
                 total_payments += scholar_amount
-            if acc.get("TrainerPayoutAddress"):
-                # Trainer Payment
-                trainer_amount = acc_balance * (acc["TrainerPercent"]/100)
-                trainer_amount += acc.get("TrainerPayout", 0)
-                trainer_amount = round(trainer_amount)
-                if trainer_amount > 0:
-                    acc_payments.append(Payment(
-                        f"Payment to trainer of {acc['Name']}",
-                        "trainer",
-                        acc["AccountAddress"],
-                        self.secrets_file[acc["AccountAddress"]],
-                        acc["TrainerPayoutAddress"],
-                        trainer_amount,
-                        self.summary
-                    ))
-                    total_payments += trainer_amount
+            else:
+                logging.info(f"skipping payment for scholar {acc}")
+
             manager_payout = acc_balance - total_payments
-            if self.donations:
-                # Extra Donations
-                for dono in self.donations:
-                    dono_amount = round(manager_payout * (dono["Percent"]/100))
-                    if dono_amount > 1:
-                        acc_payments.append(Payment(
-                                f"Donation to {dono['Name']} for {acc['Name']}",
-                                "donation",
-                                acc["AccountAddress"],
-                                self.secrets_file[acc["AccountAddress"]],
-                                dono["AccountAddress"],
-                                dono_amount,
-                                self.summary
-                            ))
-                        manager_payout -= dono_amount
-                        total_payments += dono_amount
-            # Fee Payments
-            # fee_amount = round(acc_balance * 0.01)
 
-            fee_amount = -1
-
-            if fee_amount > 0:
-                acc_payments.append(Payment(
-                            f"Donation to software creator for {acc['Name']}",
-                            "donation",
-                            acc["AccountAddress"],
-                            self.secrets_file[acc["AccountAddress"]],
-                            CREATOR_FEE_ADDRESS,
-                            fee_amount,
-                            self.summary
-                        ))
-                manager_payout -= fee_amount
-                total_payments += fee_amount
             # Manager Payment
             if manager_payout > 0:
                 acc_payments.append(Payment(

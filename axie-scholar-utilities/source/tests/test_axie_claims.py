@@ -26,8 +26,8 @@ def test_claims_manager_init(mocked_load_secrets_and_acc_name):
 
 
 def test_claims_manager_verify_input_success(tmpdir):
-    scholar_acc = 'ronin:<account_s1_address>' + "".join([str(x) for x in range(10)]*4)
-    scholar_private_acc = '0x<account_s1_private_address>012345' + "".join([str(x) for x in range(10)]*3)
+    scholar_acc = 'ronin:<account_s1_address>' + "".join([str(x) for x in range(10)] * 4)
+    scholar_private_acc = '0x<account_s1_private_address>012345' + "".join([str(x) for x in range(10)] * 3)
     p_file = tmpdir.join("p.json")
     data = {
         "Manager": "ronin:<Manager address here>",
@@ -44,15 +44,15 @@ def test_claims_manager_verify_input_success(tmpdir):
     }
     p_file.write(json.dumps(data))
     s_file = tmpdir.join("s.json")
-    s_file.write('{"'+scholar_acc+'":"'+scholar_private_acc+'"}')
+    s_file.write('{"' + scholar_acc + '":"' + scholar_private_acc + '"}')
     axc = AxieClaimsManager(p_file, s_file)
     axc.verify_inputs()
     assert axc.secrets_file == {scholar_acc: scholar_private_acc}
 
 
 def test_claims_manager_verify_only_accounts_in_payments_get_claimed(tmpdir):
-    scholar_acc = 'ronin:<account_s1_address>' + "".join([str(x) for x in range(10)]*4)
-    scholar_private_acc = '0x<account_s1_private_address>012345' + "".join([str(x) for x in range(10)]*3)
+    scholar_acc = 'ronin:<account_s1_address>' + "".join([str(x) for x in range(10)] * 4)
+    scholar_private_acc = '0x<account_s1_private_address>012345' + "".join([str(x) for x in range(10)] * 3)
     p_file = tmpdir.join("p.json")
     data = {
         "Manager": "ronin:<Manager address here>",
@@ -80,8 +80,8 @@ def test_claims_manager_verify_only_accounts_in_payments_get_claimed(tmpdir):
 
 
 def test_claims_manager_verify_inputs_wrong_public_ronin(tmpdir, caplog):
-    scholar_acc = '<account_s1_address>' + "".join([str(x) for x in range(10)]*4)
-    scholar_private_acc = '0x<account_s1_private_address>012345' + "".join([str(x) for x in range(10)]*3)
+    scholar_acc = '<account_s1_address>' + "".join([str(x) for x in range(10)] * 4)
+    scholar_private_acc = '0x<account_s1_private_address>012345' + "".join([str(x) for x in range(10)] * 3)
     p_file = tmpdir.join("p.json")
     data = {
         "Manager": "ronin:<Manager address here>",
@@ -98,7 +98,7 @@ def test_claims_manager_verify_inputs_wrong_public_ronin(tmpdir, caplog):
     }
     p_file.write(json.dumps(data))
     s_file = tmpdir.join("s.json")
-    s_file.write('{"'+scholar_acc+'":"'+scholar_private_acc+'"}')
+    s_file.write('{"' + scholar_acc + '":"' + scholar_private_acc + '"}')
     with patch.object(sys, "exit") as mocked_sys:
         axc = AxieClaimsManager(p_file, s_file)
         axc.verify_inputs()
@@ -108,8 +108,8 @@ def test_claims_manager_verify_inputs_wrong_public_ronin(tmpdir, caplog):
 
 
 def test_claims_manager_verify_input_wrong_private_ronin(tmpdir, caplog):
-    scholar_acc = '<account_s1_address>' + "".join([str(x) for x in range(10)]*4)
-    scholar_private_acc = 'ronin:<account_s1_private_address>012345' + "".join([str(x) for x in range(10)]*3)
+    scholar_acc = '<account_s1_address>' + "".join([str(x) for x in range(10)] * 4)
+    scholar_private_acc = 'ronin:<account_s1_private_address>012345' + "".join([str(x) for x in range(10)] * 3)
     p_file = tmpdir.join("p.json")
     data = {
         "Manager": "ronin:<Manager address here>",
@@ -126,7 +126,7 @@ def test_claims_manager_verify_input_wrong_private_ronin(tmpdir, caplog):
     }
     p_file.write(json.dumps(data))
     s_file = tmpdir.join("s.json")
-    s_file.write('{"'+scholar_acc+'":"'+scholar_private_acc+'"}')
+    s_file.write('{"' + scholar_acc + '":"' + scholar_private_acc + '"}')
     with patch.object(sys, "exit") as mocked_sys:
         axc = AxieClaimsManager(p_file, s_file)
         axc.verify_inputs()
@@ -136,7 +136,7 @@ def test_claims_manager_verify_input_wrong_private_ronin(tmpdir, caplog):
 
 
 def test_claims_manager_verify_input_wrong_private_short(tmpdir, caplog):
-    scholar_acc = '<account_s1_address>' + "".join([str(x) for x in range(10)]*4)
+    scholar_acc = '<account_s1_address>' + "".join([str(x) for x in range(10)] * 4)
     scholar_private_acc = 'ronin:<account_s1_private_address>012345'
     p_file = tmpdir.join("p.json")
     data = {
@@ -154,7 +154,7 @@ def test_claims_manager_verify_input_wrong_private_short(tmpdir, caplog):
     }
     p_file.write(json.dumps(data))
     s_file = tmpdir.join("s.json")
-    s_file.write('{"'+scholar_acc+'":"'+scholar_private_acc+'"}')
+    s_file.write('{"' + scholar_acc + '":"' + scholar_private_acc + '"}')
     with patch.object(sys, "exit") as mocked_sys:
         axc = AxieClaimsManager(p_file, s_file)
         axc.verify_inputs()
@@ -165,8 +165,8 @@ def test_claims_manager_verify_input_wrong_private_short(tmpdir, caplog):
 
 @patch("axie.claims.Claim.execute")
 def test_claims_manager_prepare_claims(mocked_claim_execute, tmpdir):
-    scholar_acc = 'ronin:<account_s1_address>' + "".join([str(x) for x in range(10)]*4)
-    scholar_private_acc = '0x<account_s1_private_address>012345' + "".join([str(x) for x in range(10)]*3)
+    scholar_acc = 'ronin:<account_s1_address>' + "".join([str(x) for x in range(10)] * 4)
+    scholar_private_acc = '0x<account_s1_private_address>012345' + "".join([str(x) for x in range(10)] * 3)
     p_file = tmpdir.join("p.json")
     data = {
         "Manager": "ronin:<Manager address here>",
@@ -183,7 +183,7 @@ def test_claims_manager_prepare_claims(mocked_claim_execute, tmpdir):
     }
     p_file.write(json.dumps(data))
     s_file = tmpdir.join("s.json")
-    s_file.write('{"'+scholar_acc+'":"'+scholar_private_acc+'"}')
+    s_file.write('{"' + scholar_acc + '":"' + scholar_private_acc + '"}')
     axc = AxieClaimsManager(p_file, s_file)
     axc.prepare_claims()
     mocked_claim_execute.assert_called_once()
@@ -274,18 +274,18 @@ def test_get_jwt(mocked_provider, mocked_checksum, mocked_random_msg, mock_sign_
         resp = c.get_jwt()
         assert resp == "test-token"
         expected_payload = {
-             "operationName": "CreateAccessTokenWithSignature",
-             "variables": {
+            "operationName": "CreateAccessTokenWithSignature",
+            "variables": {
                 "input": {
                     "mainnet": "ronin",
                     "owner": "0xfoo",
                     "message": "random_msg",
                     "signature": f"{HexBytes(b'123').hex()}"
                 }
-             },
-             "query": "mutation CreateAccessTokenWithSignature($input: SignatureInput!)"
-             "{createAccessTokenWithSignature(input: $input) "
-             "{newAccount result accessToken __typename}}"
+            },
+            "query": "mutation CreateAccessTokenWithSignature($input: SignatureInput!)"
+                     "{createAccessTokenWithSignature(input: $input) "
+                     "{newAccount result accessToken __typename}}"
         }
         assert req_mocker.request_history[0].json() == expected_payload
     mocked_provider.assert_called_with(RONIN_PROVIDER_FREE)
@@ -321,8 +321,8 @@ def test_get_jwt_fail_req(mocked_provider, mocked_checksum, mocked_random_msg, m
                 }
             },
             "query": "mutation CreateAccessTokenWithSignature($input: SignatureInput!)"
-            "{createAccessTokenWithSignature(input: $input) "
-            "{newAccount result accessToken __typename}}"
+                     "{createAccessTokenWithSignature(input: $input) "
+                     "{newAccount result accessToken __typename}}"
         }
         assert req_mocker.request_history[0].json() == expected_payload
 
@@ -348,8 +348,8 @@ def test_jwq_fail_req_content(mocked_provider, mocked_checksum, mocked_random_ms
                 }
             },
             "query": "mutation CreateAccessTokenWithSignature($input: SignatureInput!)"
-            "{createAccessTokenWithSignature(input: $input) "
-            "{newAccount result accessToken __typename}}"
+                     "{createAccessTokenWithSignature(input: $input) "
+                     "{newAccount result accessToken __typename}}"
         }
         assert jwt is None
         assert req_mocker.request_history[0].json() == expected_payload
@@ -381,8 +381,8 @@ def test_jwq_fail_req_content_2(mocked_provider, mocked_checksum, mocked_random_
                 }
             },
             "query": "mutation CreateAccessTokenWithSignature($input: SignatureInput!)"
-            "{createAccessTokenWithSignature(input: $input) "
-            "{newAccount result accessToken __typename}}"
+                     "{createAccessTokenWithSignature(input: $input) "
+                     "{newAccount result accessToken __typename}}"
         }
         assert req_mocker.request_history[0].json() == expected_payload
         assert jwt is None
@@ -419,7 +419,7 @@ async def test_claim_execution(mocked_provider,
                                mock_to_hex,
                                caplog):
     # Make sure file is clean to start
-    log_file= glob(LOG_FILE_PATH+'logs/claim_results_*.log')[0][9:]
+    log_file = glob(LOG_FILE_PATH + 'logs/claim_results_*.log')[0][9:]
     await async_cleanup_log_file(log_file)
     with patch.object(builtins,
                       "open",

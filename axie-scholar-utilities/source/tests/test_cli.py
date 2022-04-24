@@ -525,7 +525,7 @@ def test_generate_payments_file(tmpdir):
              'Test3,ronin:abc3,ronin:abc_scholar3,50,\n'
              'Test4,ronin:abc4,ronin:abc_scholar4,50,\n'
              'Test5,ronin:abc5,ronin:abc_scholar5,50,100\n')
-    f2 = tmpdir.join("other_folder/payments.json")
+    f2 = tmpdir.join("other_folder/paid.json")
     f2.write('{}')
     with patch.object(builtins, 'input', lambda _: 'ronin:9fa1bc784c665e683597d3f29375e45786617550'):
         cli.generate_payments_file(f1.strpath, f2.strpath)

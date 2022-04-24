@@ -132,5 +132,5 @@ dmypy.json
 .pyre/
 
 # Sensitive files
-payments.json
+axie-scholar-utilities/source/payments.json
 secrets.json

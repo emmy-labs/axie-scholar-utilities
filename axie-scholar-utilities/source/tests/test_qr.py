@@ -12,7 +12,7 @@ from axie.qr_code import QRCode
 @patch("axie.QRCodeManager.load_secrets_and_acc_name", return_value=("foo", "bar"))
 def test_qrcode_manager_init(mocked_load):
     secrets_file = "secrets.json"
-    payments_file = "payments.json"
+    payments_file = "paid.json"
     QRCodeManager(payments_file, secrets_file)
     mocked_load.assert_called_with(secrets_file, payments_file)
 

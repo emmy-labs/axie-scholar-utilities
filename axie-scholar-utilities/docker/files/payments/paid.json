@@ -1,0 +1,237 @@
+{
+  "Manager": "ronin:d2ec8a5f9e9c14099a9aa3ba3581b52fc25458b9",
+  "Scholars":[
+    {
+      "Name": "Angel",
+      "AccountAddress": "ronin:a9ef04217997bc2139f2b7a5864e06ac6dc4969d",
+      "ScholarPayoutAddress": "ronin:10b2d7c5fcf8df188a13a4fe32326c5cb542159e",
+      "ScholarPercent": 50,
+      "ScholarPayout": 5,
+      "Penalty": 0
+    },
+    {
+      "Name": "Ara",
+      "AccountAddress": "ronin:79b1d51b3e194fdccf5dbc4b53172b13d7f17904",
+      "ScholarPayoutAddress": "ronin:e140493c8d91450fe643c0f2459bbeb4197d7cb6",
+      "ScholarPercent": 50,
+      "ScholarPayout": 145,
+      "Penalty": 0
+    },
+    {
+      "Name": "Bing",
+      "AccountAddress": "ronin:d916ddd83399130d17336d5e07484ac7d3432680",
+      "ScholarPayoutAddress": "ronin:36e25db00b2486d411fc8f2dbc01caac5782191c",
+      "ScholarPercent": 50,
+      "ScholarPayout": 45,
+      "Penalty": 0
+    },
+    {
+      "Name": "Carl",
+      "AccountAddress": "ronin:63840f7082a1289a9e8780e97fe0943a0afdf57a",
+      "ScholarPayoutAddress": "ronin:b9776c5fea59b79fd35bf6afe638c76072c558d0",
+      "ScholarPercent": 50,
+      "ScholarPayout": 15,
+      "Penalty": 0
+    },
+    {
+      "Name": "CarlVincent",
+      "AccountAddress": "ronin:93d3f37f5e49c9a27ae10a30ad266f3126998fbd",
+      "ScholarPayoutAddress": "ronin:43dee4b3d615003aca95557218419e32620fb679",
+      "ScholarPercent": 50,
+      "ScholarPayout": 105,
+      "Penalty": 0
+    },
+    {
+      "Name": "Chrollo",
+      "AccountAddress": "ronin:c701beba86cd9064bb8b76b8aa3df2964e795267",
+      "ScholarPayoutAddress": "ronin:4e656411b3caa4f5d435ac554a86ce033d816050",
+      "ScholarPercent": 50,
+      "ScholarPayout": 85,
+      "Penalty": 0
+    },
+    {
+      "Name": "Cin",
+      "AccountAddress": "ronin:239787f3cb399b3fd5af8ebda3021a038936a0f5",
+      "ScholarPayoutAddress": "ronin:e5c973e15f6ec21ce56c96b2340eafe2727212ff",
+      "ScholarPercent": 50,
+      "ScholarPayout": 0,
+      "Penalty": 0
+    },
+    {
+      "Name": "Deo",
+      "AccountAddress": "ronin:8e5b5698e392c03d7ecfd30ec36afe0d66dd40f5",
+      "ScholarPayoutAddress": "ronin:7afd9cfebdf181433e6abbe0312ebf3de9b0784a",
+      "ScholarPercent": 50,
+      "ScholarPayout": 185,
+      "Penalty": 0
+    },
+    {
+      "Name": "Deyseel",
+      "AccountAddress": "ronin:af7deffb143deac1d69a81f4f471eae4a23b74ee",
+      "ScholarPayoutAddress": "ronin:745d62690eb082a3fffa9b1695b80342c6c41edc",
+      "ScholarPercent": 50,
+      "ScholarPayout": 55,
+      "Penalty": 0
+    },
+    {
+      "Name": "James",
+      "AccountAddress": "ronin:3451441dbc3e84fbb288cc8e8ba02e50cf8afefe",
+      "ScholarPayoutAddress": "ronin:22a3bde0ddc9d95e24a3c0908ac6ad60bfda2383",
+      "ScholarPercent": 50,
+      "ScholarPayout": 5,
+      "Penalty": 0
+    },
+    {
+      "Name": "Jayson",
+      "AccountAddress": "ronin:e0e5530e507de14735c274891befaa6f082a5478",
+      "ScholarPayoutAddress": "ronin:6967be2035b53f854ff3831af75f4ebc6cb18926",
+      "ScholarPercent": 50,
+      "ScholarPayout": 5,
+      "Penalty": 0
+    },
+    {
+      "Name": "Jeanlan",
+      "AccountAddress": "ronin:89c6a60ae8d78cf8ef68a08243a895478da96234",
+      "ScholarPayoutAddress": "ronin:a70263a5001fe4c11f4ac2f3d627e564c84042a6",
+      "ScholarPercent": 50,
+      "ScholarPayout": 0,
+      "Penalty": 0
+    },
+    {
+      "Name": "Jerose",
+      "AccountAddress": "ronin:24d9374b927d442964ca6fdd3c93034f793c5168",
+      "ScholarPayoutAddress": "ronin:0dcc7df57bfd068a16485e2b311146202de5312d",
+      "ScholarPercent": 50,
+      "ScholarPayout": 5,
+      "Penalty": 0
+    },
+    {
+      "Name": "Jey",
+      "AccountAddress": "ronin:3ade0c4bd9b3ed05ec228c1c6c61af21f9e73faa",
+      "ScholarPayoutAddress": "ronin:39895e93ed6227ade225a1e8c833896bd7cb6fc4",
+      "ScholarPercent": 50,
+      "ScholarPayout": 10,
+      "Penalty": 0
+    },
+    {
+      "Name": "Joan",
+      "AccountAddress": "ronin:d6f3bff6b3f4b8750fb80b2055738fc2f6941af3",
+      "ScholarPayoutAddress": "ronin:d5e8e416a9b7902498177899338bff57c94dc135",
+      "ScholarPercent": 50,
+      "ScholarPayout": 15,
+      "Penalty": 100
+    },
+    {
+      "Name": "John",
+      "AccountAddress": "ronin:d0686872259a02199011f7605430930f715487cb",
+      "ScholarPayoutAddress": "ronin:878cbbff6b1f5ee27d43228a092e0dbb680226f3",
+      "ScholarPercent": 50,
+      "ScholarPayout": 0,
+      "Penalty": 0
+    },
+    {
+      "Name": "Junnie",
+      "AccountAddress": "ronin:ccf3e165937153f7695cb2519a02c1075b54e737",
+      "ScholarPayoutAddress": "ronin:c97b0778a2de2b89e7f36fd0d883e1c36bbfbe27",
+      "ScholarPercent": 50,
+      "ScholarPayout": 0,
+      "Penalty": 0
+    },
+    {
+      "Name": "Khurt",
+      "AccountAddress": "ronin:1d83d6cf567154102c877dbacfa249af539403c0",
+      "ScholarPayoutAddress": "ronin:e7e3fa6d47fc7bc6e6bf60c5b358a0b11d55cdcf",
+      "ScholarPercent": 50,
+      "ScholarPayout": 15,
+      "Penalty": 0
+    },
+    {
+      "Name": "Kien",
+      "AccountAddress": "ronin:24ebad395c9183e8eb86460213c220694450a2c8",
+      "ScholarPayoutAddress": "ronin:b8cc5c55060a193a6e4a769f534fcbe66cbdf691",
+      "ScholarPercent": 50,
+      "ScholarPayout": 15,
+      "Penalty": 0
+    },
+    {
+      "Name": "Koko",
+      "AccountAddress": "ronin:dda765dcfc8b20e7dac7df62b177fcf15fc62383",
+      "ScholarPayoutAddress": "ronin:af1f9ce083b13a9fbfbe8d00e2b133dbadf4fa4e",
+      "ScholarPercent": 50,
+      "ScholarPayout": 0,
+      "Penalty": 250
+    },
+    {
+      "Name": "Logan",
+      "AccountAddress": "ronin:c496359dc7501c6dfb716fdffd3b6d27be9d3cec",
+      "ScholarPayoutAddress": "ronin:0196fa78200e1859eef232522cb905314d123243",
+      "ScholarPercent": 50,
+      "ScholarPayout": 125,
+      "Penalty": 0
+    },
+    {
+      "Name": "Mhel",
+      "AccountAddress": "ronin:5219273bb41568aea35dc05981854deab0b1a859",
+      "ScholarPayoutAddress": "ronin:f61ef7c0e7d280dde2e879d1c49e1fa8515dbed1",
+      "ScholarPercent": 50,
+      "ScholarPayout": 5,
+      "Penalty": 0
+    },
+    {
+      "Name": "Paul",
+      "AccountAddress": "ronin:0b95f71a6eff54315c8f91b66a2dcd764212bf11",
+      "ScholarPayoutAddress": "ronin:0196fa78200e1859eef232522cb905314d123243",
+      "ScholarPercent": 50,
+      "ScholarPayout": 145,
+      "Penalty": 0
+    },
+    {
+      "Name": "Reggie",
+      "AccountAddress": "ronin:facc4cc6ffb51e65c6ba9f991151b27236beb512",
+      "ScholarPayoutAddress": "ronin:f5b82a0eb7245cb538a8bfe732d9facf0064e166",
+      "ScholarPercent": 50,
+      "ScholarPayout": 275,
+      "Penalty": 29
+    },
+    {
+      "Name": "Reygan",
+      "AccountAddress": "ronin:3015c551a622558f0d1f1910cb579a603fede0b7",
+      "ScholarPayoutAddress": "ronin:a5e6b049c237724e00cfd70f6588d98f184a10c5",
+      "ScholarPercent": 50,
+      "ScholarPayout": 5,
+      "Penalty": 250
+    },
+    {
+      "Name": "Rizza",
+      "AccountAddress": "ronin:6a338a3d7ca2eb3b165cf2802d108574a6d5db1b",
+      "ScholarPayoutAddress": "ronin:0548461c357a056c1eb1a096ea0a7e6ed8a65d8a",
+      "ScholarPercent": 50,
+      "ScholarPayout": 5,
+      "Penalty": 0
+    },
+    {
+      "Name": "Troy",
+      "AccountAddress": "ronin:0ed41e0f901d07613bd2333e47090c0e4437ad7f",
+      "ScholarPayoutAddress": "ronin:7e45ca39e1237c8b093278dc972f8d23e42be5cd",
+      "ScholarPercent": 50,
+      "ScholarPayout": 15,
+      "Penalty": 250
+    },
+    {
+      "Name": "Troy_old",
+      "AccountAddress": "ronin:a6ad225085d8964787112ef611f1055730f3bd58",
+      "ScholarPayoutAddress": "ronin:7e45ca39e1237c8b093278dc972f8d23e42be5cd",
+      "ScholarPercent": 50,
+      "ScholarPayout": 0,
+      "Penalty": 0
+    },
+    {
+      "Name": "Zelskei",
+      "AccountAddress": "ronin:10101cb640b215580d13ca07ee85ba41af02f7e5",
+      "ScholarPayoutAddress": "ronin:0105da4c0d2f770efcbd690791e39ec7cb8c59fc",
+      "ScholarPercent": 50,
+      "ScholarPayout": 65,
+      "Penalty": 0
+    }
+  ]
+}

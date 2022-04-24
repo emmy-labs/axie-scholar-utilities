@@ -17,8 +17,7 @@ payments_schema = {
                     "Name",
                     "AccountAddress",
                     "ScholarPayoutAddress",
-                    "ScholarPayout",
-                    "ManagerPayout"
+                    "ScholarPayout"
                 ],
                 "dependencies": {
                     "TrainerPayoutAddress": ["TrainerPayout"],
@@ -34,11 +33,10 @@ payments_schema = {
                     },
                     "ScholarPayoutAddress": {
                         "type": "string",
-                        "pattern": "^ronin:"
                     },
                     "ScholarPayout": {
                         "type": "number",
-                        "minimum": 1
+                        "minimum": 0
                     },
                     "TrainerPayoutAddress": {
                         "type": "string",
@@ -46,15 +44,15 @@ payments_schema = {
                     },
                     "TrainerPayout": {
                         "type": "number",
-                        "minimum": 1
+                        "minimum": 0
                     },
-                    "ManagerPayout": {
+                    "PreviousScholar": {
                         "type": "number",
-                        "minimum": 1
+                        "minimum": 0
                     },
                     "Penalty": {
                         "type": "number",
-                    }
+                    },
                 },
                 "additionalProperties": False
             }
@@ -88,7 +86,6 @@ payments_schema = {
     },
     "additionalProperties": False
 }
-
 
 payments_percent_schema = {
     "type": "object",
@@ -125,11 +122,10 @@ payments_percent_schema = {
                     },
                     "ScholarPayoutAddress": {
                         "type": "string",
-                        "pattern": "^ronin:"
                     },
                     "ScholarPayout": {
                         "type": "number",
-                        "minimum": 1
+                        "minimum": 0
                     },
                     "ScholarPercent": {
                         "type": "number",
@@ -151,9 +147,13 @@ payments_percent_schema = {
                     },
                     "Penalty": {
                         "type": "number",
-                    }
+                    },
+                    "PreviousScholar": {
+                        "type": "number",
+                        "minimum": 0
+                    },
                 },
-                "additionalProperties": False
+                "additionalProperties": True
             }
         },
         "Donations": {
@@ -185,7 +185,6 @@ payments_percent_schema = {
     },
     "additionalProperties": False
 }
-
 
 transfers_schema = {
     "type": "array",
@@ -222,7 +221,6 @@ transfers_schema = {
         }
     }
 }
-
 
 breeding_schema = {
     "type": "array",
